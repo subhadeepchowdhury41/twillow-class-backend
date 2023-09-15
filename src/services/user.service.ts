@@ -19,8 +19,20 @@ export default class UserService {
     const token = signJwt(user);
     return JSON.stringify({accessToken: token, id: user._id});
   }
-  createUser = async (input: CreateUserInput) => {
-    return await UserModel.create(input);
+  createUser = async ({
+    username, name, password, email
+  } : {
+    username: string,
+    name: string,
+    password: string,
+    email: string
+  }) => {
+    return await UserModel.create({
+      email,
+      username,
+      password,
+      name
+    });
   }
   fetchUser = async (id: string) => {
     return await UserModel.findById(id);

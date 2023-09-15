@@ -29,8 +29,13 @@ export default class UserResolver {
   }
 
   @Mutation(() => User)
-  createUser(@Arg('input') input: CreateUserInput) {
-    return this.userService.createUser(input);
+  createUser(
+    @Arg('username', () => String) username: string,
+    @Arg('name', () => String) name: string,
+    @Arg('password', () => String) password: string,
+    @Arg('email', () => String) email: string
+  ) {
+    return this.userService.createUser({name, username, password, email});
   }
 
   @Mutation(() => User)
