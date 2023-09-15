@@ -10,4 +10,12 @@ export default class TweetService {
     media?.forEach((m) => tweet.media.push(m));
     return await tweet.save();
   }
+
+  likeTweet = async (tweetId: string, userId: string) => {
+    return await TweetModel.findByIdAndUpdate(tweetId, { $addToSet: { likes: userId } }, { new: true });
+  }
+
+  fetchTweet = async (id: string) => {
+    return TweetModel.findById(id);
+  }
 }

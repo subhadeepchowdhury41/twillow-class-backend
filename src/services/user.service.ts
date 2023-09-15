@@ -56,8 +56,8 @@ export default class UserService {
   }
   addFollowing = async (userId: string, followerId: string) => {
     return await Promise.all([
-      UserModel.findByIdAndUpdate(followerId, { $push: { followers: userId } }, { new: true }),
-      UserModel.findByIdAndUpdate(userId, { $push: { followings: followerId } }, { new: true })
+      UserModel.findByIdAndUpdate(followerId, { $addToSet: { followers: userId } }, { new: true }),
+      UserModel.findByIdAndUpdate(userId, { $addToSet: { followings: followerId } }, { new: true })
     ]).then((res) => {
       return [res[0], res[1]];
     });

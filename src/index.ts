@@ -18,6 +18,10 @@ const bootstrap = async () => {
     authChecker: authChecker
   });
   const app = express();
+  app.post('/upload', (req, res) => {
+    console.log(req.body);
+    res.send('ok');
+  });
   app.use(cookieParser());
   const server = new ApolloServer({
     schema,

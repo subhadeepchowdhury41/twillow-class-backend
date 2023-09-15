@@ -22,4 +22,19 @@ export default class TweetResolver {
   ) {
     return this.tweetService.createTweet(text, author, media);
   }
+
+  @Mutation(() => Tweet)
+  likeTweet(
+    @Arg("tweetId", () => ID) tweetId: string,
+    @Arg("userId", () => ID) userId: string
+  ) {
+    return this.tweetService.likeTweet(tweetId, userId);
+  }
+
+  @Query(() => Tweet)
+  fetchTweet(
+    @Arg("id", () => ID) id: string
+  ) {
+    return this.tweetService.fetchTweet(id);
+  }
 }
