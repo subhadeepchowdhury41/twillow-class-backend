@@ -11,6 +11,10 @@ import { connectToDB } from './utils/mongo';
 import authChecker from './utils/authChecker';
 import { verifyJwt } from './utils/jwt';
 import { User } from './schemas/user.schema';
+import { v2 as cloudinary } from 'cloudinary';
+import { cloudinaryConfig } from '../config/default';
+import multer from 'multer';
+import streamifier from 'streamifier';
 
 const bootstrap = async () => {
   const schema = await buildSchema({
@@ -18,9 +22,34 @@ const bootstrap = async () => {
     authChecker: authChecker
   });
   const app = express();
-  app.post('/upload', (req, res) => {
-    console.log(req.body);
-    res.send('ok');
+  cloudinary.config(cloudinaryConfig);
+  const upload = multer({ storage: multer.memoryStorage() });
+  app.post('/upload', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+      console.error('File upload failed');
+      return res.status(400).send('File upload failed.');
+    }
+    try {
+      let folder;
+      if (req.file.mimetype.startsWith('image')) folder = 'images'
+      else if (req.file.mimetype.startsWith('video')) folder = 'videos'
+      else folder = 'files';
+
+      const result = cloudinary.uploader.upload_stream(
+        { resource_type: 'auto', folder: folder },
+        (error, result) => {
+          if (error) {
+            console.error('Error uploading to Cloudinary:', error);
+            return res.status(500).send('Error uploading to Cloudinary.');
+          }
+          return res.json({url: result!.secure_url, type: result!.resource_type});
+        }
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(result);
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      return res.status(500).send('Error uploading to Cloudinary.');
+    }
   });
   app.use(cookieParser());
   const server = new ApolloServer({
@@ -42,7 +71,7 @@ const bootstrap = async () => {
   });
   await server.start();
   server.applyMiddleware({ app });
-  app.listen(4000, () => {
+  app.listen(process.env.PORT || 4000, () => {
     console.log('server started on localhost:4000 ⚡⚡⚡');
   });
   connectToDB();
