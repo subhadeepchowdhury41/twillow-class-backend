@@ -32,7 +32,7 @@ export default class UserResolver {
   listFollowings(@Arg('id', () => ID) id: string) {
     return this.userService.listFollowings(id);
   }
-  
+
   @Mutation(() => User)
   createUser(
     @Arg('username', () => String) username: string,
@@ -55,6 +55,8 @@ export default class UserResolver {
 
   @Mutation(() => [User])
   followUser(@Arg('userId', () => ID) userId: string, @Arg('followerId', () => ID) followerId: string) {
+    console.log("USER", userId, "FOLLOWING USER   ", followerId);
+    
     return this.userService.addFollowing(userId, followerId);
   }
 
