@@ -8,6 +8,26 @@ import { AsQueryMethod } from "@typegoose/typegoose/lib/types";
 
 export interface UserQueryHelpers {
   findByUsername: AsQueryMethod<typeof findByUsername>;
+  fetchFollowings: AsQueryMethod<typeof fetchFollowings>;
+  fetchFollowers: AsQueryMethod<typeof fetchFollowers>;
+}
+
+function fetchFollowings(
+  this: ReturnModelType<typeof User, UserQueryHelpers>,
+  userId: string
+) {
+  return this.findById(userId).populate("followings", [
+    '_id', 'username', 'name', 'pfp'
+  ]);
+}
+
+function fetchFollowers(
+  this: ReturnModelType<typeof User, UserQueryHelpers>,
+  userId: string
+) {
+  return this.findById(userId).populate("followers", [
+    '_id', 'username', 'name', 'pfp'
+  ]);
 }
 
 function findByUsername(
@@ -25,6 +45,8 @@ function findByUsername(
   const hash = await bcrypt.hash(this.password, salt);
   this.password = hash;
 })
+@queryMethod(fetchFollowings)
+@queryMethod(fetchFollowers)
 @queryMethod(findByUsername)
 @index({ username: 1, email: 1 }, { unique: true })
 @ObjectType()

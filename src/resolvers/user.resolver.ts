@@ -28,6 +28,11 @@ export default class UserResolver {
     return this.userService.listUsers();
   }
 
+  @Query(() => [User])
+  listFollowings(@Arg('id', () => ID) id: string) {
+    return this.userService.listFollowings(id);
+  }
+  
   @Mutation(() => User)
   createUser(
     @Arg('username', () => String) username: string,

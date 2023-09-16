@@ -15,6 +15,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { cloudinaryConfig } from '../config/default';
 import multer from 'multer';
 import streamifier from 'streamifier';
+import cors from 'cors';
 
 const bootstrap = async () => {
   const schema = await buildSchema({
@@ -22,6 +23,9 @@ const bootstrap = async () => {
     authChecker: authChecker
   });
   const app = express();
+  app.use(cors({
+    origin: '*'
+  }));
   cloudinary.config(cloudinaryConfig);
   const upload = multer({ storage: multer.memoryStorage() });
   app.post('/upload', upload.single('file'), async (req, res) => {

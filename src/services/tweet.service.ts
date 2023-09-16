@@ -1,8 +1,16 @@
-import { TweetModel } from "../schemas";
+import { TweetModel, UserModel } from "../schemas";
+
 
 export default class TweetService {
   listTweets = async () => {
-    return await TweetModel.find();
+    return await TweetModel.find().listAllTweetsByTime();
+  }
+
+  fetchTimelineTweets = async (userId: string) => {
+    let followings = await UserModel.findById(userId).fetchFollowers(userId);
+    let followingsIds = followings?.followings.map((f: any) => f._id);
+    console.log(followingsIds);
+    return await TweetModel.find().fetchTimelineTweets(userId, followingsIds ?? []);
   }
 
   createTweet = async (text: string, author: string, media?: string[]) => {

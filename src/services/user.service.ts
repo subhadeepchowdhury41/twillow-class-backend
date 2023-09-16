@@ -10,6 +10,8 @@ export default class UserService {
     const e = "Invalid username or password";
     const user = await UserModel.find().findByUsername(username).lean();
     if (!user) {
+      console.log("NO USER");
+      
       throw new ApolloError(e);
     }
     const passwordIsValid = await bcrypt.compare(password, user.password);
@@ -26,7 +28,9 @@ export default class UserService {
     name: string,
     password: string,
     email: string
-  }) => {
+    }) => {
+    console.log("CREATING USER");
+    
     return await UserModel.create({
       email,
       username,
@@ -39,6 +43,11 @@ export default class UserService {
   }
   listUsers = async () => {
     return await UserModel.find();
+  }
+  listFollowings = async (id: string) => {
+    let user = await UserModel.findById(id);
+    console.log(user);
+    return user?.followings;
   }
   updateUser = async ({
     id, name, bio, pfp

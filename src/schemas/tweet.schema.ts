@@ -1,9 +1,33 @@
-import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import { prop, getModelForClass, Ref, queryMethod } from '@typegoose/typegoose';
 import { ObjectType, Field, InputType } from 'type-graphql';
 import { User } from './user.schema';
 import { Comment } from './comment.schema';
+import { AsQueryMethod, ReturnModelType } from '@typegoose/typegoose/lib/types';
+import { UserModel } from '.';
+
+export interface TweetQueryHelpers {
+  listAllTweetsByTime: AsQueryMethod<typeof listAllTweetsByTime>;
+  fetchTimelineTweets: AsQueryMethod<typeof fetchTimelineTweets>;
+}
+
+function listAllTweetsByTime(
+  this: ReturnModelType<typeof Tweet, TweetQueryHelpers>,) {
+  return this.find().sort({ dateTime: -1 });
+}
+
+function fetchTimelineTweets(
+  this: ReturnModelType<typeof Tweet, TweetQueryHelpers>,
+  userId: string,
+  followings: string[]
+) {
+  return this.find().where({
+    'auhtor': { $in: followings }
+  }).sort({ dateTime: -1 });
+}
 
 @ObjectType()
+@queryMethod(listAllTweetsByTime)
+@queryMethod(fetchTimelineTweets)  
 export class Tweet {
   @Field(() => String)
   _id: string;

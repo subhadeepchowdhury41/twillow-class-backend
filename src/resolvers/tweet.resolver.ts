@@ -14,6 +14,13 @@ export default class TweetResolver {
     return this.tweetService.listTweets();
   }
 
+  @Query(() => [Tweet])
+  fetchTimelineTweets(
+    @Arg("userId", () => ID) userId: string,
+  ) {
+    return this.tweetService.fetchTimelineTweets(userId);
+  }
+
   @Mutation(() => Tweet)
   createTweet(
     @Arg("text", () => String) text: string,
