@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const tweet_service_1 = __importDefault(require("../services/tweet.service"));
 const tweet_schema_1 = require("../schemas/tweet.schema");
+const user_schema_1 = require("../schemas/user.schema");
 let TweetResolver = class TweetResolver {
     constructor(tweetService) {
         this.tweetService = tweetService;
@@ -26,14 +27,23 @@ let TweetResolver = class TweetResolver {
     listTweets() {
         return this.tweetService.listTweets();
     }
+    listLikes(id) {
+        return this.tweetService.listLikes(id);
+    }
     fetchTimelineTweets(userId) {
         return this.tweetService.fetchTimelineTweets(userId);
     }
     createTweet(text, author, media) {
         return this.tweetService.createTweet(text, author, media);
     }
+    updateTweet(id, text, media) {
+        return this.tweetService.updateTweet(id, text, media);
+    }
     likeTweet(tweetId, userId) {
         return this.tweetService.likeTweet(tweetId, userId);
+    }
+    unlikeTweet(tweetId, userId) {
+        return this.tweetService.unlikeTweet(tweetId, userId);
     }
     fetchTweet(id) {
         return this.tweetService.fetchTweet(id);
@@ -45,6 +55,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TweetResolver.prototype, "listTweets", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => [user_schema_1.User]),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TweetResolver.prototype, "listLikes", null);
 __decorate([
     (0, type_graphql_1.Query)(() => [tweet_schema_1.Tweet]),
     __param(0, (0, type_graphql_1.Arg)("userId", () => type_graphql_1.ID)),
@@ -63,12 +80,29 @@ __decorate([
 ], TweetResolver.prototype, "createTweet", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => tweet_schema_1.Tweet),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
+    __param(1, (0, type_graphql_1.Arg)("text", () => String)),
+    __param(2, (0, type_graphql_1.Arg)("media", () => [String], { nullable: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Array]),
+    __metadata("design:returntype", void 0)
+], TweetResolver.prototype, "updateTweet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => tweet_schema_1.Tweet),
     __param(0, (0, type_graphql_1.Arg)("tweetId", () => type_graphql_1.ID)),
     __param(1, (0, type_graphql_1.Arg)("userId", () => type_graphql_1.ID)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], TweetResolver.prototype, "likeTweet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => tweet_schema_1.Tweet),
+    __param(0, (0, type_graphql_1.Arg)("tweetId", () => type_graphql_1.ID)),
+    __param(1, (0, type_graphql_1.Arg)("userId", () => type_graphql_1.ID)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], TweetResolver.prototype, "unlikeTweet", null);
 __decorate([
     (0, type_graphql_1.Query)(() => tweet_schema_1.Tweet),
     __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.ID)),
