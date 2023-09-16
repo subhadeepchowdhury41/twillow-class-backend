@@ -19,8 +19,20 @@ export default class TweetService {
     return await tweet.save();
   }
 
+  updateTweet = async (id: string, text: string, media?: string[]) => {
+    return await TweetModel.findByIdAndUpdate(id, { text, media }, { new: true });
+  }
+
   likeTweet = async (tweetId: string, userId: string) => {
     return await TweetModel.findByIdAndUpdate(tweetId, { $addToSet: { likes: userId } }, { new: true });
+  }
+
+  unlikeTweet = async (tweetId: string, userId: string) => {
+    return await TweetModel.findByIdAndUpdate(tweetId, { $pull: { likes: userId } }, { new: true });
+  }
+
+  listLikes = async (id: string) => {
+    return (await TweetModel.findById(id))?.likes;
   }
 
   fetchTweet = async (id: string) => {

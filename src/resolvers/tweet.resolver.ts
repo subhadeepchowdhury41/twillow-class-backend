@@ -14,6 +14,13 @@ export default class TweetResolver {
     return this.tweetService.listTweets();
   }
 
+  @Query(() => [User])
+  listLikes(
+    @Arg("id", () => ID) id: string
+  ) {
+    return this.tweetService.listLikes(id);
+  }
+
   @Query(() => [Tweet])
   fetchTimelineTweets(
     @Arg("userId", () => ID) userId: string,
@@ -31,11 +38,28 @@ export default class TweetResolver {
   }
 
   @Mutation(() => Tweet)
+  updateTweet(
+    @Arg("id", () => ID) id: string,
+    @Arg("text", () => String) text: string,
+    @Arg("media", () => [String], { nullable: true }) media: string[]
+  ) {
+    return this.tweetService.updateTweet(id, text, media);
+  }
+
+  @Mutation(() => Tweet)
   likeTweet(
     @Arg("tweetId", () => ID) tweetId: string,
     @Arg("userId", () => ID) userId: string
   ) {
     return this.tweetService.likeTweet(tweetId, userId);
+  }
+
+  @Mutation(() => Tweet)
+  unlikeTweet(
+    @Arg("tweetId", () => ID) tweetId: string,
+    @Arg("userId", () => ID) userId: string
+  ) {
+    return this.tweetService.unlikeTweet(tweetId, userId);
   }
 
   @Query(() => Tweet)
