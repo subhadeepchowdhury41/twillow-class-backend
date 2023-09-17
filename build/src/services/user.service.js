@@ -40,7 +40,6 @@ class UserService {
         };
         this.listFollowings = async (id) => {
             let user = await schemas_1.UserModel.findById(id);
-            console.log(user);
             return user === null || user === void 0 ? void 0 : user.followings;
         };
         this.updateUser = async ({ id, name, bio, pfp }) => {
