@@ -1,4 +1,4 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, ID, Mutation, Query, Resolver } from "type-graphql";
 import TweetService from "../services/tweet.service";
 import { Tweet } from "../schemas/tweet.schema";
 import { User } from "../schemas/user.schema";
@@ -9,11 +9,13 @@ export default class TweetResolver {
     this.tweetService = new TweetService();
   }
 
+  @Authorized()
   @Query(() => [Tweet])
   listTweets() {
     return this.tweetService.listTweets();
   }
 
+  @Authorized()
   @Query(() => [User])
   listLikes(
     @Arg("id", () => ID) id: string
@@ -21,6 +23,7 @@ export default class TweetResolver {
     return this.tweetService.listLikes(id);
   }
 
+  @Authorized()
   @Query(() => [Tweet])
   fetchTimelineTweets(
     @Arg("userId", () => ID) userId: string,
@@ -28,6 +31,7 @@ export default class TweetResolver {
     return this.tweetService.fetchTimelineTweets(userId);
   }
 
+  @Authorized()
   @Mutation(() => Tweet)
   createTweet(
     @Arg("text", () => String) text: string,
@@ -46,6 +50,7 @@ export default class TweetResolver {
     return this.tweetService.updateTweet(id, text, media);
   }
 
+  @Authorized()
   @Mutation(() => Tweet)
   likeTweet(
     @Arg("tweetId", () => ID) tweetId: string,
@@ -54,6 +59,7 @@ export default class TweetResolver {
     return this.tweetService.likeTweet(tweetId, userId);
   }
 
+  @Authorized()
   @Mutation(() => Tweet)
   unlikeTweet(
     @Arg("tweetId", () => ID) tweetId: string,

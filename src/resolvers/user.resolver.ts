@@ -1,4 +1,4 @@
-import { Query, Resolver, Mutation, Arg, ID, Ctx } from "type-graphql";
+import { Query, Resolver, Mutation, Arg, ID, Ctx, Authorized } from "type-graphql";
 import { CreateUserInput, User } from "../schemas/user.schema";
 import UserService from "../services/user.service";
 import Context from "../types/context";
@@ -9,6 +9,7 @@ export default class UserResolver {
     this.userService = new UserService();
   }
 
+  @Authorized()
   @Query(() => User)
   fetchUser(@Arg('id', () => ID) id: string) {
     return this.userService.fetchUser(id);
@@ -23,11 +24,13 @@ export default class UserResolver {
     return this.userService.login(username, password, context);
   }
 
+  @Authorized()
   @Query(() => [User])
   listUsers() {
     return this.userService.listUsers();
   }
 
+  @Authorized()
   @Query(() => [User])
   listFollowings(@Arg('id', () => ID) id: string) {
     return this.userService.listFollowings(id);
@@ -43,6 +46,7 @@ export default class UserResolver {
     return this.userService.createUser({name, username, password, email});
   }
 
+  @Authorized()
   @Mutation(() => User)
   updateUser(
     @Arg('name', () => String, {nullable: true}) name: string,
@@ -53,6 +57,7 @@ export default class UserResolver {
     return this.userService.updateUser({id: id, name: name, bio: bio, pfp: pfp});
   }
 
+  @Authorized()
   @Mutation(() => [User])
   followUser(@Arg('userId', () => ID) userId: string, @Arg('followerId', () => ID) followerId: string) {
     console.log("USER", userId, "FOLLOWING USER   ", followerId);
@@ -60,6 +65,7 @@ export default class UserResolver {
     return this.userService.addFollowing(userId, followerId);
   }
 
+  @Authorized()
   @Mutation(() => [User])
   unfollowUser(@Arg('userId', () => ID) userId: string, @Arg('followerId', () => ID) followerId: string) {
     return this.userService.removeFollowing(userId, followerId);

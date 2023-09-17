@@ -46,7 +46,6 @@ export default class UserService {
   }
   listFollowings = async (id: string) => {
     let user = await UserModel.findById(id);
-    console.log(user);
     return user?.followings;
   }
   updateUser = async ({
